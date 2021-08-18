@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+</head>
+
+<body>
+    <div id='calendar-names'>
+        <h2>Название календарей:</h2>
+        <p id='loadingInCalendarNames'>Загрузка...</p>
+    </div>
+    </br>
+    <div id='calendar-events'>
+        <h2>Мероприятия:</h2>
+        <p id='loadingInCalendarEvents'>Загрузка...</p>
+    </div>
+</body>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<script>
+    const removeLoading = (loadingIdName) => $(loadingIdName).empty();
+
+    const setterValuesToDiv = (array, HTMLElementId, ifArrayIsEmptyText, loadingIdName) => {
+        if (array.length > 1) {
+            removeLoading(loadingIdName);
+            const perrow = 2;
+            const table = document.createElement('table');
+            let row = table.insertRow();
+
+            for (let i = 0; i < array.length; i++) {
+                let cell = row.insertCell();
+                cell.innerHTML = array[i];
+                let next = i + 1;
+                if (next % perrow == 0 && next != array.length) row = table.insertRow();
+            }
+            document.getElementById(HTMLElementId).appendChild(table);
+        } else {
+            removeLoading(loadingIdName);
+            const text = document.createTextNode(ifArrayIsEmptyText);
+            document.getElementById(HTMLElementId).appendChild(text);
+        }
+    }
+
+    const setCalendarNames = (calendars) => setterValuesToDiv(calendars.names, 'calendar-names', 'Календари не найдены', '#loadingInCalendarNames')
+    google.script.run.withSuccessHandler(setCalendarNames)
+        .getFiveUpcomingEventsByCalendarId();
+
+
+    const setCalendarEvents = (events) => setterValuesToDiv(events.events, 'calendar-events', 'Ближайших мероприятий нету', '#loadingInCalendarEvents')
+    google.script.run.withSuccessHandler(setCalendarEvents)
+        .getFiveUpcomingEventsByCalendarId();
+
+</script>
+
+</html>
