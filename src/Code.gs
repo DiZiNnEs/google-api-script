@@ -70,7 +70,3 @@ const showSidebar = () => {
 const onOpen = () => {
   createUI();
 }
-
-
-
-
